@@ -15,7 +15,8 @@ $sql = "SELECT firstname,
                surname,
                username,
                email,
-               email_verified
+               email_verified,
+               two_factor_enabled
         FROM logintbl
         WHERE id = ?";
 
@@ -68,6 +69,10 @@ mysqli_close($conn);
 
 if(isset($_GET['verified'])){
     echo "<p style='color:green;font-weight:bold;'>Email verified successfully.</p>";
+}
+
+if(isset($_GET['twofa'])){
+    echo "<p style='color:green;font-weight:bold;'>Two-Factor Authentication settings updated.</p>";
 }
 
 ?>
@@ -129,7 +134,7 @@ readonly>
 
 <p>
 
-<strong>Status</strong><br>
+<strong>Email Status</strong><br>
 
 <?php
 
@@ -172,6 +177,82 @@ Change Password
 </button>
 
 </a>
+
+<hr>
+
+<h2>Two-Factor Authentication (2FA)</h2>
+
+<p>
+
+<strong>Status:</strong>
+
+<?php
+
+if($user['two_factor_enabled']){
+
+    echo "<span style='color:green;font-weight:bold;'>Enabled</span>";
+
+}else{
+
+    echo "<span style='color:red;font-weight:bold;'>Disabled</span>";
+
+}
+
+?>
+
+</p>
+
+<?php
+
+if($user['email_verified']==1){
+
+?>
+
+<p>
+
+Every time you log in, a 4-digit verification code will be sent to your verified email.
+
+</p>
+
+<form action="toggle_2fa.php" method="POST">
+
+<button type="submit">
+
+<?php
+
+if($user['two_factor_enabled']){
+
+    echo "Disable Two-Factor Authentication";
+
+}else{
+
+    echo "Enable Two-Factor Authentication";
+
+}
+
+?>
+
+</button>
+
+</form>
+
+<?php
+
+}else{
+
+?>
+
+<p style="color:red;">
+
+Verify your email first before enabling Two-Factor Authentication.
+
+</p>
+
+<?php
+
+}
+
+?>
 
 </td>
 
